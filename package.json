@@ -1,0 +1,38 @@
+{
+  "name": "actuality",
+  "version": "1.0.0",
+  "description": "actuality =========",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepublish": "npm run compile",
+    "test": "npm run compile && 6to5-node test/harness.js test/**/*-test.js",
+    "compile": "6to5 --optional selfContained --modules common --out-dir dist index.js lib/**.js"
+  },
+  "author": "Erik Toth <totherik@gmail.com>",
+  "license": "ISC",
+  "keywords": [
+    "Server",
+    "statistics."
+  ],
+  "devDependencies": {
+    "6to5": "^3.5.3",
+    "glob": "^4.3.5",
+    "tape": "^3.5.0"
+  },
+  "dependencies": {
+    "6to5-runtime": "^3.5.3",
+    "measured": "^1.0.0",
+    "on-finished": "^2.2.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/totherik/actuality.git"
+  },
+  "bugs": {
+    "url": "https://github.com/totherik/actuality/issues"
+  },
+  "homepage": "https://github.com/totherik/actuality"
+}
