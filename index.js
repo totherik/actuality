@@ -8,7 +8,7 @@ function range(n) {
     return ((n / 100) | 0) * 100;
 }
 
-export default function ({ interval = 5 * 1000 }) {
+export default function ({ interval = 5 * 1000, emitter }) {
 
     // Records response times.
     let timer, time = once(server => {
@@ -36,6 +36,9 @@ export default function ({ interval = 5 * 1000 }) {
         setInterval(() => {
             // TODO!
             app.emit('stats', {});
+            //console.log(timer.toJSON());
+            console.log(counter.toJSON());
+            //console.log(rps.toJSON());
             counter.reset();
         }, interval).unref();
     });
@@ -43,9 +46,10 @@ export default function ({ interval = 5 * 1000 }) {
     return function (req, res, next) {
         let { app, socket: { server } } = req;
 
-        rps.mark();
-        announce(app);
+        announce(app || emitter);
         time(server);
+
+        rps.mark();
         counter.inc('total_requests');
         counter.inc('active_requests');
 
