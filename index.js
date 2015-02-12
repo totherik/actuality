@@ -1,5 +1,6 @@
 import Measured from 'measured';
 import finished from 'on-finished';
+import { EventEmitter } from 'events';
 import { once } from './lib/util';
 import Counter from './lib/counter';
 
@@ -8,7 +9,7 @@ function range(n) {
     return ((n / 100) | 0) * 100;
 }
 
-export default function ({ interval = 5 * 1000, emitter }) {
+export default function ({ interval = 5 * 1000, emitter = new EventEmitter() }) {
 
     // Records response times.
     let timer, time = once(server => {
