@@ -3,8 +3,8 @@ import { EventEmitter } from 'events';
 import actuality from './index';
 
 let emitter = new EventEmitter();
-emitter.on('stats', () => {
-    console.log('stats');
+emitter.on('stats', (stats) => {
+    console.log(stats);
 });
 
 let handle = actuality({ interval: 1000, emitter });

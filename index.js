@@ -35,10 +35,11 @@ export default function ({ interval = 5 * 1000, emitter }) {
     let announce = once(app => {
         setInterval(() => {
             // TODO!
-            app.emit('stats', {});
-            //console.log(timer.toJSON());
-            console.log(counter.toJSON());
-            //console.log(rps.toJSON());
+            app.emit('stats', {
+                'response_time': timer.toJSON(),
+                'counts': counter.toJSON(),
+                'rps': rps.toJSON()
+            });
             counter.reset();
         }, interval).unref();
     });
