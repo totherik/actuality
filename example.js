@@ -3,14 +3,15 @@ import { EventEmitter } from 'events';
 import actuality from './index';
 
 let emitter = new EventEmitter();
-emitter.on('process', (stats) => {
-    console.log(stats);
+emitter.on('report', (type, data) => {
+    console.log(type, data);
 });
 
-let handle = actuality({ interval: 15000, emitter });
+
+let instrument = actuality({ interval: 15000, emitter });
 
 let server = http.createServer((req, res) => {
-    handle(req, res);
+    instrument(req, res);
     res.end('ok');
 });
 
