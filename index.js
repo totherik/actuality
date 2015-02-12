@@ -9,17 +9,15 @@ function range(n) {
 }
 
 export default function ({ interval = 5 * 1000 }) {
-    let app, server;
 
     // Records response times.
-    let timer = new Measured.Timer();
-    timer.unref();
-
-    let time = once(server => {
+    let timer, time = once(server => {
         // Add instrumentation to get response times. There
         // is a caveat that we won't record the very first request,
         // but I'm ok with that tradeoff since we guarantee accurate
         // request times due to not relying on middleware ordering.
+        timer = new Measured.Timer();
+        timer.unref();
         server.on('request', (_, res) => {
             let elapsed = timer.start();
             finished(res, () => elapsed.end());
@@ -33,11 +31,21 @@ export default function ({ interval = 5 * 1000 }) {
     // Records arbitrary counts.
     let counter = new Counter();
 
+    // Announce statistics.
+    let announce = once(app => {
+        setInterval(() => {
+            // TODO!
+            app.emit('stats', {});
+            counter.reset();
+        }, interval).unref();
+    });
+
     return function (req, res, next) {
-        app = req.app;
+        let { app, socket: { server } } = req;
 
         rps.mark();
-        time({ socket: { server } });
+        announce(app);
+        time(server);
         counter.inc('total_requests');
         counter.inc('active_requests');
 
