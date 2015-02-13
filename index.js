@@ -12,9 +12,8 @@ const DEFAULT_METRICS = [ 'os', 'process', 'server' ];
 
 export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, metrics = DEFAULT_METRICS }) {
 
-    let request, server;
-    let sporadic = [];  // Emit whenevs
-    let timed = [];     // Emit at a regular interval
+    let sporadic = [];   // Emit whenevs
+    let timed = [];      // Emit at a regular interval
 
 
     if (metrics.includes('os')) {
@@ -68,14 +67,22 @@ export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, met
             }
         }, interval).unref();
 
+        return emitter;
     });
 
 
     // Enhances default collectors *if* program is running
     // as an http server.
-    let enhance = once((emitter) => {
+    let enhance = once(emitter => {
+        let request, server;
+
+        // Will return the cached originally provided emitter if
+        // one was provided initially, otherwise will return the
+        // passed in emitter.
+        emitter = announce(emitter);
+
         // `request` and `server` are handled specially later
-        // as this data is only emitter when running as a server.
+        // as this data is only emitted when running as a server.
         if (metrics.includes('request')) {
             // NOTE: This has to happen before the `server`
             // data is registered, as `server` borrows
@@ -100,8 +107,7 @@ export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, met
             });
         }
 
-        // Noop if emitter was originally provided
-        announce(emitter);
+        return { request, server };
     });
 
 
@@ -118,7 +124,7 @@ export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, met
         // Defer instrumentation of `request` and `server`
         // until we know we're running in a server environment
         // and/or accepting requests.
-        enhance(emitter || req.app);
+        let { server, request } = enhance(req.app);
 
         if (server) {
             server.instrument(req, res);
