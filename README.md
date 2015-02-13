@@ -71,7 +71,7 @@ import { EventEmitter } from 'events';
 
 
 let emitter = new EventEmitter();
-emitter.on('report', (type, stats) {
+emitter.on('report', (type, stats) => {
     console.log(type); // either 'os' or 'process'
     console.log(stats.ts); // timestamp
     console.log(JSON.stringify(stats.data));
