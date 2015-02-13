@@ -34,5 +34,8 @@
   "bugs": {
     "url": "https://github.com/totherik/actuality/issues"
   },
-  "homepage": "https://github.com/totherik/actuality"
+  "homepage": "https://github.com/totherik/actuality",
+  "optionalDependencies": {
+    "gc-stats": "0.0.2"
+  }
 }
