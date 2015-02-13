@@ -4,8 +4,9 @@ import actuality from './index';
 
 
 let emitter = new EventEmitter();
-emitter.on('report', (...args) => {
-    console.log(JSON.stringify(args, null, 4));
+emitter.on('report', (type, { ts, data }) => {
+    console.log(type, ts);
+    console.log(JSON.stringify(data, null, 4));
 });
 
 
