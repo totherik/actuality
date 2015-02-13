@@ -10,8 +10,8 @@ import actuality from 'actuality';
 import { EventEmitter } from 'events';
 
 let emitter = new EventEmitter();
-emitter.on('report', (type, stats) {
-    // Will report 'os' and 'process' events
+emitter.on('report', (type, stats) => {
+    // Will report 'os' and 'process' metrics
     // at a default interval.
 });
 
