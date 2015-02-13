@@ -15,7 +15,10 @@ export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, met
     let sporadic = [];   // Emit whenevs
     let timed = [];      // Emit at a regular interval
 
-
+    // Start by setting up this collectors that
+    // will always be run. Some will emit at the
+    // provided interval, while other will emit
+    // when data is available.
     if (metrics.includes('os')) {
         let os = new OS();
         timed.push(emitter => {
@@ -124,13 +127,13 @@ export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, met
         // Defer instrumentation of `request` and `server`
         // until we know we're running in a server environment
         // and/or accepting requests.
-        let { server, request } = enhance(req.app);
+        let { request, server } = enhance(req.app);
 
         if (server) {
+            // Server implicitly instruments request as a
+            // result of composition.
             server.instrument(req, res);
-        }
-
-        if (request) {
+        } else if (request) {
             request.instrument(req, res);
         }
 
