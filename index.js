@@ -10,8 +10,9 @@ const DEFAULT_INTERVAL = 15 * 1000;
 const DEFAULT_METRICS = [ 'os', 'process', 'server' ];
 
 
-export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, metrics = DEFAULT_METRICS }) {
+export default function (options = {}) {
 
+    let { interval = DEFAULT_INTERVAL, emitter = undefined, metrics = DEFAULT_METRICS } = options;
     let sporadic = [];   // Emit whenevs
     let timed = [];      // Emit at a regular interval
 
