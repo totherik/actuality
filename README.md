@@ -11,10 +11,11 @@ import { EventEmitter } from 'events';
 
 let emitter = new EventEmitter();
 emitter.on('report', (type, stats) {
-     /// ...
+    // Will report 'os' and 'process' events
+    // at a default interval.
 });
 
-let instrument = actuality({ emitter });
+actuality({ emitter });
 ```
 
 
