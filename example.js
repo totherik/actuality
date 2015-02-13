@@ -4,11 +4,11 @@ import actuality from './index';
 
 let emitter = new EventEmitter();
 emitter.on('report', (type, data) => {
-    console.log(type, data);
+    console.log(JSON.stringify(data, null, 4));
 });
 
 
-let instrument = actuality({ interval: 15000, emitter });
+let instrument = actuality({ interval: 10000, emitter });
 
 let server = http.createServer((req, res) => {
     instrument(req, res);

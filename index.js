@@ -5,13 +5,13 @@ import Process from './lib/process';
 import { once } from './lib/util';
 
 
-export default function ({ interval = 15 * 1000, emitter = undefined }) {
+export default function ({ interval = 15 * 1000, maxEventLoopDelay = 0, emitter = undefined }) {
 
     // Provides OS-level metrics.
     let os = new OS();
 
     // Provides process details.
-    let process = new Process(interval);
+    let process = new Process(interval, maxEventLoopDelay);
 
     // Provides server/app info such as requests, status codes,
     // open connections, etc.
