@@ -12,7 +12,7 @@ const DEFAULT_METRICS = [ 'os', 'process', 'server' ];
 
 export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, metrics = DEFAULT_METRICS }) {
 
-    let server, request;
+    let request, server;
     let sporadic = [];  // Emit whenevs
     let timed = [];     // Emit at a regular interval
 
@@ -51,38 +51,11 @@ export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, met
         });
     }
 
-    if (metrics.includes('request')) {
-        // NOTE: This has to happen before the `server`
-        // data is registered, as `server` borrows
-        // some of the data captured by `request`
-        request = new Request(true);
-        sporadic.push(emitter => {
-            request.on('request', data => {
-                emitter.emit('report', 'request', {
-                    ts: Date.now(),
-                    data
-                });
-            });
-        });
-    }
 
-    if (metrics.includes('server')) {
-        server = new Server(interval);
-        request = request || new Request();
-
-        timed.push(emitter => {
-            emitter.emit('report', 'server', {
-                ts: Date.now(),
-                data: {
-                    socket: server.toJSON(),
-                    requests: request.toJSON()
-                }
-            });
-        });
-    }
-
-
-    // Announce statistics. If no emitter just creates one as a noop.
+    // Registers existing collectors and establishes interval for announcing
+    // statistics. If no emitter is provided, just creates one as a noop.
+    // NOTE: `timed` collectors array can be modified at any time (and is
+    // when `server collector is added.)
     let announce = once((emitter = new EventEmitter()) => {
 
         for (let register of sporadic) {
@@ -98,6 +71,40 @@ export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, met
     });
 
 
+    // Enhances default collectors *if* program is running
+    // as an http server.
+    let enhance = once((emitter) => {
+        // `request` and `server` are handled specially later
+        // as this data is only emitter when running as a server.
+        if (metrics.includes('request')) {
+            // NOTE: This has to happen before the `server`
+            // data is registered, as `server` borrows
+            // some of the data captured by `request`
+            request = new Request(true);
+            request.on('request', data => {
+                emitter.emit('report', 'request', {
+                    ts: Date.now(),
+                    data
+                });
+            });
+        }
+
+        if (metrics.includes('server')) {
+            // Add to timed data.
+            server = new Server(interval, request);
+            timed.push(emitter => {
+                emitter.emit('report', 'server', {
+                    ts: Date.now(),
+                    data: server.toJSON()
+                });
+            });
+        }
+
+        // Noop if emitter was originally provided
+        announce(emitter);
+    });
+
+
     if (emitter) {
         // Optimistically bind the emitter as early
         // as possibly. If one isn't available, wait
@@ -108,8 +115,10 @@ export default function ({ interval = DEFAULT_INTERVAL, emitter = undefined, met
 
 
     return function actuality(req, res, next) {
-        // Noop if emitter was provided
-        announce(req.app);
+        // Defer instrumentation of `request` and `server`
+        // until we know we're running in a server environment
+        // and/or accepting requests.
+        enhance(emitter || req.app);
 
         if (server) {
             server.instrument(req, res);

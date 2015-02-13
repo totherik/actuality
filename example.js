@@ -9,7 +9,7 @@ emitter.on('report', (...args) => {
 });
 
 
-let instrument = actuality({ interval: 10000, emitter, metrics: ['gc'] });
+let instrument = actuality({ interval: 10000, emitter, metrics: ['os', 'process', 'server', 'request', 'gc'] });
 
 let server = http.createServer((req, res) => {
     instrument(req, res);
