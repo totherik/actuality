@@ -5,7 +5,7 @@ actuality
 including http servers.
 
 #### Basic Usage
-```javsacript
+```javascript
 import actuality from 'actuality';
 import { EventEmitter } from 'events';
 
