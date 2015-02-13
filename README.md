@@ -48,7 +48,14 @@ properties:
 
 # Events
 #### `report`
-
+`function (type, stats) { }`  
+When new data of any type is available, a report event is emitted on the
+configured event emitter with arguments `type` and `stats`.
+- `type` (String) - The name of the metrics collector that produced this data,
+e.g. the type of data.
+- `stats` (Object) - An object with the structure `{ ts, data }`, containing a
+timestamp in milliseconds (`ts`) and the data collected by this particular
+collector.
 
 # Collectors
 #### os
