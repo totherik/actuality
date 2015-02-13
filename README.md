@@ -10,7 +10,7 @@ import actuality from 'actuality';
 import { EventEmitter } from 'events';
 
 let emitter = new EventEmitter();
-emitter.on('report', (type, stats) => {
+emitter.on('report', (type, { ts, data }) => {
     // Will report 'os' and 'process' metrics
     // at a default interval.
 });
@@ -78,10 +78,10 @@ import { EventEmitter } from 'events';
 
 
 let emitter = new EventEmitter();
-emitter.on('report', (type, stats) => {
+emitter.on('report', (type, { ts, data }) => {
     console.log(type); // either 'os' or 'process'
-    console.log(stats.ts); // timestamp
-    console.log(JSON.stringify(stats.data));
+    console.log(ts); // timestamp
+    console.log(JSON.stringify(data));
 });
 
 // Use default metrics `os` and `process`. Even though `server` is a default
@@ -97,10 +97,10 @@ import { EventEmitter } from 'events';
 
 
 let emitter = new EventEmitter();
-emitter.on('report', (type, stats) => {
+emitter.on('report', (type, { ts, data }) => {
     console.log(type); // either 'os', 'process', or 'server'
-    console.log(stats.ts); // timestamp
-    console.log(JSON.stringify(stats.data));
+    console.log(ts); // timestamp
+    console.log(JSON.stringify(data));
 });
 
 
@@ -125,10 +125,10 @@ import { EventEmitter } from 'events';
 
 let app = express();
 
-app.on('report', (type, stats) => {
+app.on('report', (type, { ts, data }) => {
     console.log(type); // either 'os' or 'process'
-    console.log(stats.ts); // timestamp
-    console.log(JSON.stringify(stats.data));
+    console.log(ts); // timestamp
+    console.log(JSON.stringify(data));
 });
 
 app.use(actuality());
