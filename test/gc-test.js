@@ -2,6 +2,12 @@ import test from 'tape';
 import { EventEmitter } from 'events';
 import actuality from '../';
 
+try {
+    require('gc-stats');
+} catch (err) {
+    console.warn('gc stats not available.');
+    return;
+}
 
 test('gc', t => {
 

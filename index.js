@@ -3,7 +3,7 @@ import OS from './lib/os';
 import Server from './lib/server';
 import Request from './lib/request';
 import Process from './lib/process';
-import { once } from './lib/util';
+import { once, load } from './lib/util';
 
 
 const DEFAULT_INTERVAL = 15 * 1000;
@@ -42,16 +42,20 @@ export default function (options = {}) {
 
     if (metrics.includes('gc')) {
         // Sideways loading as `gc-stats` is an optional dependency,
-        let GCStats = require('gc-stats');
-        let gc = new GCStats();
-        sporadic.push(emitter => {
-            gc.on('stats', data => {
-                emitter.emit('report', 'gc', {
-                    ts: Date.now(),
-                    data
+        let GCStats = load('gc-stats');
+        if (GCStats) {
+            let gc = new GCStats();
+            sporadic.push(emitter => {
+                gc.on('stats', data => {
+                    emitter.emit('report', 'gc', {
+                        ts: Date.now(),
+                        data
+                    });
                 });
             });
-        });
+        } else {
+            console.warn('GC stats not available.');
+        }
     }
 
 
