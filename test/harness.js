@@ -16,6 +16,6 @@ setImmediate(() => {
 });
 
 // Get a handle on the root test harness so we
-// can forcefull kill the process (THANKS TIMERS!)
-//tape().on('end', function () { setImmediate(process.exit, 0) });
+// can forcefully kill the process (THANKS TIMERS!)
+tape().on('end', function () { setImmediate(process.exit, 0) });
 });

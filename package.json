@@ -1,32 +1,15 @@
 {
   "name": "actuality",
   "version": "1.0.0",
-  "description": "actuality =========",
+  "description": "Node.js process, os, and server metrics.",
   "main": "dist/index.js",
-  "scripts": {
-    "prepublish": "npm run compile",
-    "test": "npm run compile && 6to5-node test/harness.js test/**/*-test.js",
-    "compile": "6to5 --optional selfContained --modules common --out-dir dist index.js lib/**.js"
-  },
   "author": "Erik Toth <totherik@gmail.com>",
   "license": "ISC",
   "keywords": [
-    "Server",
-    "statistics."
+    "metrics",
+    "statistics",
+    "collector"
   ],
-  "devDependencies": {
-    "6to5": "^3.5.3",
-    "glob": "^4.3.5",
-    "tape": "^3.5.0"
-  },
-  "dependencies": {
-    "6to5-runtime": "^3.5.3",
-    "measured": "^1.0.0",
-    "on-finished": "^2.2.0"
-  },
-  "directories": {
-    "test": "test"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/totherik/actuality.git"
@@ -35,7 +18,29 @@
     "url": "https://github.com/totherik/actuality/issues"
   },
   "homepage": "https://github.com/totherik/actuality",
+  "scripts": {
+    "prepublish": "npm run compile",
+    "compile": "6to5 --optional selfContained --modules common --out-dir dist index.js lib/*.js",
+    "test": "npm run compile && 6to5-node --expose-gc test/harness.js test/*-test.js",
+    "cover": "npm run compile && 6to5-node --expose-gc node_modules/.bin/istanbul cover test/harness.js test/*-test.js"
+  },
+  "devDependencies": {
+    "6to5": "^3.5.3",
+    "glob": "^4.3.5",
+    "istanbul": "^0.3.5",
+    "supertest": "^0.15.0",
+    "tape": "^3.5.0"
+  },
+  "dependencies": {
+    "6to5-runtime": "^3.5.3",
+    "measured": "^1.0.0",
+    "on-finished": "^2.2.0"
+  },
   "optionalDependencies": {
     "gc-stats": "0.0.2"
+  },
+  "directories": {
+    "test": "test",
+    "dist": "dest"
   }
 }
