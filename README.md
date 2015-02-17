@@ -1,6 +1,8 @@
 actuality
 =========
 
+[![Build Status](https://travis-ci.org/totherik/actuality.svg)](https://travis-ci.org/totherik/actuality)
+
 `actuality` is a npm-compatible module for collecting data on processes,
 including http servers.
 
